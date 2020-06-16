@@ -24,14 +24,13 @@ while True:
         pass
 
     else:
-        for i in range(len(text_in)):
-            if i == 0:
-                running_total += int(text_in[i])
-            elif "-" in text_in[i]:
-                if len(text_in[i]) % 2 != 0:
-                    running_total -= int(text_in[i])
+        running_total += int(text_in[0])
+
+        for i in range(1, len(text_in), 2):
+            if "-" in text_in[i] and len(text_in[i]) % 2 != 0:
+                    running_total -= int(text_in[i + 1])
             else:
-                running_total += int(text_in[i])
+                running_total += int(text_in[i + 1])
 
         print(running_total)
         running_total = 0
