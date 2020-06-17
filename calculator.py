@@ -19,9 +19,13 @@ while True:
         elif text_in[0][0] == "/":
             print("Unknown command")
 
-
-        elif text_in[0][0] in ("+", "-") or text_in[0].isdigit():
+        elif text_in[0][0] in ("+", "-"):
             running_total += int(text_in[0])
+            print(running_total)
+
+        elif text_in[0].isdigit():
+            running_total += int(text_in[0])
+            print(running_total)
 
         elif not text_in[0].isdigit():
                 print("Invalid expression")
@@ -42,6 +46,8 @@ while True:
         pass
 
     elif len(text_in) == 1 and not text_in[0].isdigit():
+        pass
+    elif len(text_in) == 1 and text_in[0].isdigit():
         pass
     else:
         print(running_total)
