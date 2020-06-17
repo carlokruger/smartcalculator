@@ -1,6 +1,7 @@
 # write your code here
 
 running_total = 0
+nums = 0
 
 while True:
     text_in = input().split()
@@ -14,41 +15,41 @@ while True:
             break
 
         elif text_in[0] == "/help":
-            print("The program calculates the sum of numbers")
+            print("The program calculates the output of an expression")
 
         elif text_in[0][0] == "/":
             print("Unknown command")
 
-        elif text_in[0][0] in ("+", "-"):
-            running_total += int(text_in[0])
-            print(running_total)
+        elif text_in[0][0] != "/":
+            try:
+                running_total += int(text_in[0])
 
-        elif text_in[0].isdigit():
-            running_total += int(text_in[0])
-            print(running_total)
+            except ValueError:
+                print("Invalid expression1")
 
-        elif not text_in[0].isdigit():
-                print("Invalid expression")
+            else:
+                print(running_total)
 
     elif len(text_in) > 1 and len(text_in) % 2 == 0:
-        print("Invalid expression")
+        print("Invalid expression2")
 
     else:
-        running_total += int(text_in[0])
+        try:
+            for x in range(0, len(text_in), 2):
+                nums += int(text_in[x])
 
-        for i in range(1, len(text_in), 2):
-            if "-" in text_in[i] and len(text_in[i]) % 2 != 0:
-                    running_total -= int(text_in[i + 1])
-            else:
-                running_total += int(text_in[i + 1])
+        except ValueError:
+            print("Invalid expression3")
 
-    if len(text_in) == 0:
-        pass
+        else:
+            running_total += int(text_in[0])
 
-    elif len(text_in) == 1 and not text_in[0].isdigit():
-        pass
-    elif len(text_in) == 1 and text_in[0].isdigit():
-        pass
-    else:
-        print(running_total)
+            for i in range(1, len(text_in), 2):
+                if "-" in text_in[i] and len(text_in[i]) % 2 != 0:
+                        running_total -= int(text_in[i + 1])
+                else:
+                    running_total += int(text_in[i + 1])
+
+            print(running_total)
+
     running_total = 0
