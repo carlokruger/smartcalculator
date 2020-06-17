@@ -2,26 +2,32 @@
 
 running_total = 0
 
-def subtract(a, b):
-    return int(a) - int(b)
-
-
-def add(a, b):
-    return int(a) + int(b)
-
-
 while True:
     text_in = input().split()
 
-    if len(text_in) == 1 and text_in[0] == "/exit":
-        print("Bye!")
-        break
-
-    elif len(text_in) == 1 and text_in[0] == "/help":
-        print("The program calculates the sum of numbers")
-
-    elif len(text_in) == 0:
+    if len(text_in) == 0:
         pass
+
+    elif len(text_in) == 1:
+        if text_in[0] == "/exit":
+            print("Bye!")
+            break
+
+        elif text_in[0] == "/help":
+            print("The program calculates the sum of numbers")
+
+        elif text_in[0][0] == "/":
+            print("Unknown command")
+
+
+        elif text_in[0][0] in ("+", "-") or text_in[0].isdigit():
+            running_total += int(text_in[0])
+
+        elif not text_in[0].isdigit():
+                print("Invalid expression")
+
+    elif len(text_in) > 1 and len(text_in) % 2 == 0:
+        print("Invalid expression")
 
     else:
         running_total += int(text_in[0])
@@ -32,5 +38,11 @@ while True:
             else:
                 running_total += int(text_in[i + 1])
 
+    if len(text_in) == 0:
+        pass
+
+    elif len(text_in) == 1 and not text_in[0].isdigit():
+        pass
+    else:
         print(running_total)
-        running_total = 0
+    running_total = 0
