@@ -4,29 +4,23 @@ running_total = 0
 nums = 0
 variables = {}
 equal_count = 0
+text_in = []
 
-def commands(text):
-    if text[0] == "/exit":
-        print("Bye!")
-        break
-
-    elif text[0] == "/help":
-        print("The program calculates the output of an expression")
-
-    elif text[0][0] == "/":
-        print("Unknown command")
 
 def return_variable(text):
-    if not text.isalpha():
+    global variables
+
+    if not text[0].isalpha():
         print("Invalid identifier")
 
-    elif text in variables:
-        print(variables[text])
+    elif text[0] in variables:
+        print(variables[text[0]])
 
     else:
         print("Unknown variable")
 
 def return_single_digit(text):
+    global running_total
     try:
         running_total += int(text[0])
 
@@ -36,8 +30,12 @@ def return_single_digit(text):
     else:
         print(running_total)
 
-def variable_assignment(text):
-    pass
+def single_variable_assignment_malformed(text):
+    if text[0][-1] == "=" or text[1][0] == "=":
+        for idx, item in enumerate(text):
+            text[idx] = item.replace("=", "")
+        variables.update({text[0]: text[1]})
+        print(variables)
 
 while True:
     text_in = input().split()
@@ -46,7 +44,15 @@ while True:
         pass
 
     elif len(text_in) == 1 and text_in[0][0] == "/":
-        commands(text_in)
+        if text_in[0] == "/exit":
+            print("Bye!")
+            break
+
+        elif text_in[0] == "/help":
+            print("The program calculates the output of an expression")
+
+        else:
+            print("Unknown command")
 
     elif len(text_in) == 1 and text_in[0][0].isalpha():
         return_variable(text_in)
@@ -54,14 +60,22 @@ while True:
     elif len(text_in) == 1 and text_in[0][0] != "/":
         return_single_digit(text_in)
 
-    elif len(text_in) > 1 and len(text_in) % 2 == 0:
+    elif len(text_in) == 2:
         for x in text_in:
             if "=" in x:
                 equal_count += 1
         if equal_count == 1:
-            variable_assignment(text_in)
+            single_variable_assignment_malformed(text_in)
+            equal_count = 0
         else:
             print("Invalid expression2")
+
+    elif len(text_in) == 3 and text_in[1] == "=":
+        try:
+            text_in[2] = int(text_in[2])
+            variables.update({text_in[0]: text_in[2]})
+        except ValueError:
+            variables.update({text_in[0]: text_in[2]})
 
     else:
         try:
