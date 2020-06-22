@@ -19,6 +19,7 @@ def return_variable(text):
     else:
         print("Unknown variable")
 
+
 def return_single_digit(text):
     global running_total
     try:
@@ -30,12 +31,13 @@ def return_single_digit(text):
     else:
         print(running_total)
 
+
 def single_variable_assignment_malformed(text):
     if text[0][-1] == "=" or text[1][0] == "=":
         for idx, item in enumerate(text):
             text[idx] = item.replace("=", "")
         variables.update({text[0]: text[1]})
-        print(variables)
+
 
 while True:
     text_in = input().split()
@@ -43,7 +45,7 @@ while True:
     if len(text_in) == 0:
         pass
 
-    elif len(text_in) == 1 and text_in[0][0] == "/":  #commands
+    elif len(text_in) == 1 and text_in[0][0] == "/":  # deal with commands
         if text_in[0] == "/exit":
             print("Bye!")
             break
@@ -54,28 +56,55 @@ while True:
         else:
             print("Unknown command")
 
-    elif len(text_in) == 1 and text_in[0][0].isalpha():  # variable return
-        return_variable(text_in)
+    elif len(text_in) == 1:
 
-    elif len(text_in) == 1 and text_in[0][0] != "/":  # return single digit
-        return_single_digit(text_in)
+        if text_in[0].isalpha():  # well formed variable return
+            return_variable(text_in)
 
-    elif len(text_in) == 2:  # malformed variable assignment
+        elif "=" == text_in[0][1]:  # another malformed variable assignment of form "a=b"
+            try:
+                y = int(text_in[0][2])
+                variables.update({text_in[0][0]: y})
+            except ValueError:
+                if text_in[0][2] in variables:
+                    variables.update({text_in[0][0]: variables[text_in[0][2]]})
+                else:
+                    if not text_in[0][2].isalpha():
+                        print("Invalid identifier")
+                    else:
+                        print("Unknown variable")
+
+        elif text_in[0].lstrip("-+").isdigit():  # return single digit
+            return_single_digit(text_in)
+        else:
+            print("Invalid identifier")
+
+    elif len(text_in) == 2:  # malformed variable assignment of form "a= b" or "a =b"
         for x in text_in:
             if "=" in x:
                 equal_count += 1
         if equal_count == 1:
             single_variable_assignment_malformed(text_in)
             equal_count = 0
-        else:
-            print("Invalid expression2")
+        elif equal_count > 1:
+            print("Invalid assignment")  # too many equal signs
 
     elif len(text_in) == 3 and text_in[1] == "=":  # well formed variable assignment
-        try:
-            text_in[2] = int(text_in[2])
-            variables.update({text_in[0]: text_in[2]})
-        except ValueError:
-            variables.update({text_in[0]: text_in[2]})
+        if not text_in[0].isalpha():
+            print("Invalid identifier")
+        else:
+            try:
+                z = int(text_in[2])
+                variables.update({text_in[0]: z})  # assign numerical value
+
+            except ValueError:
+                if text_in[2] in variables:  # if variable already exists set assignment to value
+                    variables.update({text_in[0]: variables[text_in[2]]})
+                else:
+                    if not text_in[2].isalpha():
+                        print("Invalid identifier")
+                    else:
+                        print("Unknown variable")
 
     else:  # number operations
         try:
@@ -89,8 +118,8 @@ while True:
             running_total += int(text_in[0])
 
             for i in range(1, len(text_in), 2):
-                if "-" in text_in[i] and len(text_in[i]) % 2 != 0:
-                        running_total -= int(text_in[i + 1])
+                if "-" in text_in[i] and len(text_in[i]) % 2 != 0:  # dealing with multiple minus signs
+                    running_total -= int(text_in[i + 1])
                 else:
                     running_total += int(text_in[i + 1])
 
