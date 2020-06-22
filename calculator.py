@@ -43,7 +43,7 @@ while True:
     if len(text_in) == 0:
         pass
 
-    elif len(text_in) == 1 and text_in[0][0] == "/":
+    elif len(text_in) == 1 and text_in[0][0] == "/":  #commands
         if text_in[0] == "/exit":
             print("Bye!")
             break
@@ -54,13 +54,13 @@ while True:
         else:
             print("Unknown command")
 
-    elif len(text_in) == 1 and text_in[0][0].isalpha():
+    elif len(text_in) == 1 and text_in[0][0].isalpha():  # variable return
         return_variable(text_in)
 
-    elif len(text_in) == 1 and text_in[0][0] != "/":
+    elif len(text_in) == 1 and text_in[0][0] != "/":  # return single digit
         return_single_digit(text_in)
 
-    elif len(text_in) == 2:
+    elif len(text_in) == 2:  # malformed variable assignment
         for x in text_in:
             if "=" in x:
                 equal_count += 1
@@ -70,14 +70,14 @@ while True:
         else:
             print("Invalid expression2")
 
-    elif len(text_in) == 3 and text_in[1] == "=":
+    elif len(text_in) == 3 and text_in[1] == "=":  # well formed variable assignment
         try:
             text_in[2] = int(text_in[2])
             variables.update({text_in[0]: text_in[2]})
         except ValueError:
             variables.update({text_in[0]: text_in[2]})
 
-    else:
+    else:  # number operations
         try:
             for x in range(0, len(text_in), 2):
                 nums += int(text_in[x])
