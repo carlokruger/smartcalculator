@@ -159,6 +159,9 @@ while True:
                     except ValueError:
                         print("Unknown variable")
 
+    elif len(text_in) > 3 and text_in.count("=") > 1:
+        print("Invalid assignment")
+
     elif len(text_in) > 3 and text_in[1] != "=":
         for var in range(0, len(text_in), 2):  # parse for variables
             if not text_in[var].isalpha() and not text_in[var].lstrip("=+-").isdigit():
