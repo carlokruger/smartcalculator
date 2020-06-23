@@ -36,6 +36,9 @@ def single_variable_assignment_malformed(text):
     if text[0][-1] == "=" or text[1][0] == "=":
         for idx, item in enumerate(text):
             text[idx] = item.replace("=", "")
+    if text[1] in variables:
+        variables.update({text[0]: variables[text[1]]})
+    else:
         variables.update({text[0]: text[1]})
 
 
@@ -122,11 +125,13 @@ while True:
 
                 if text_in[2] in variables:
                     running_total += variables[text_in[2]]
+                    print(running_total)
 
                 else:
                     try:
                         a = int(text_in[2])
                         running_total += a
+                        print(running_total)
                     except ValueError:
                         print("Unknown variable")
 
@@ -135,7 +140,7 @@ while True:
                 print("Invalid identifier")
             else:
                 if text_in[0] in variables:
-                    running_total -= variables[text_in[0]]
+                    running_total += variables[text_in[0]]
                 else:
                     try:
                         a = int(text_in[0])
@@ -154,9 +159,48 @@ while True:
                     except ValueError:
                         print("Unknown variable")
 
+    elif len(text_in) > 3 and text_in[1] != "=":
+        for var in range(0, len(text_in), 2):  # parse for variables
+            if not text_in[var].isalpha() and not text_in[var].lstrip("=+-").isdigit():
+                print("Invalid identifier")
+            elif text_in[var] not in variables and not text_in[var].lstrip("=+-").isdigit():
+                print("Unknown variable")
+            try:
+                b = int(text_in[var])
+                text_in[var] = b  # assign number to variable spot
+            except ValueError:
+                if text_in[var] in variables:
+                    text_in[var] = variables[text_in[var]]  # set spot = value of key variable
+                else:
+                    print("Invalid identifier")
+
+        for ops in range(1, len(text_in), 2):  # parsing operators
+            if "+" in text_in[ops]:
+                text_in[ops] = "+"
+            elif "-" in text_in[ops] and len(text_in[ops]) % 2 == 0:
+                text_in[ops] = "+"
+            elif "-" in text_in[ops] and len(text_in[ops]) % 2 == 1:
+                text_in[ops] = "-"
+            else:
+                print("Invalid operator")
+
+        running_total += text_in[0]
+
+        for idx in range(2, len(text_in), 2):
+            if text_in[idx - 1] == "+":
+                running_total += text_in[idx]
+
+            elif text_in[idx - 1] == "-":
+                running_total -= text_in[idx]
+
+            elif text_in[idx - 1] == "=":
+                print("Invalid assignment")
+
+        print(running_total)
 
 
-    else:  # number operations
+
+    '''else:  # number operations
         try:
             for x in range(0, len(text_in), 2):
                 nums += int(text_in[x])
@@ -173,6 +217,6 @@ while True:
                 else:
                     running_total += int(text_in[i + 1])
 
-            print(running_total)
+            print(running_total)'''
 
     running_total = 0
