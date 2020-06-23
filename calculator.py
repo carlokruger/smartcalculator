@@ -89,22 +89,72 @@ while True:
         elif equal_count > 1:
             print("Invalid assignment")  # too many equal signs
 
-    elif len(text_in) == 3 and text_in[1] == "=":  # well formed variable assignment
-        if not text_in[0].isalpha():
-            print("Invalid identifier")
-        else:
-            try:
-                z = int(text_in[2])
-                variables.update({text_in[0]: z})  # assign numerical value
+    elif len(text_in) == 3:
+        if text_in[1] == "=":  # well formed variable assignment
+            if not text_in[0].isalpha():
+                print("Invalid identifier")
+            else:
+                try:
+                    z = int(text_in[2])
+                    variables.update({text_in[0]: z})  # assign numerical value
 
-            except ValueError:
-                if text_in[2] in variables:  # if variable already exists set assignment to value
-                    variables.update({text_in[0]: variables[text_in[2]]})
-                else:
-                    if not text_in[2].isalpha():
-                        print("Invalid identifier")
+                except ValueError:
+                    if text_in[2] in variables:  # if variable already exists set assignment to value
+                        variables.update({text_in[0]: variables[text_in[2]]})
                     else:
+                        if not text_in[2].isalpha():
+                            print("Invalid identifier")
+                        else:
+                            print("Unknown variable")
+
+        if text_in[1] == "+":  # dealing with simple addition
+            if not text_in[0].isalpha() or not text_in[2].isalpha():
+                print("Invalid identifier")
+            else:
+                if text_in[0] in variables:
+                    running_total += variables[text_in[0]]
+                else:
+                    try:
+                        a = int(text_in[0])
+                        running_total += a
+                    except ValueError:
                         print("Unknown variable")
+
+                if text_in[2] in variables:
+                    running_total += variables[text_in[2]]
+
+                else:
+                    try:
+                        a = int(text_in[2])
+                        running_total += a
+                    except ValueError:
+                        print("Unknown variable")
+
+        if text_in[1] == "-":  # dealing with simple subtraction
+            if not text_in[0].isalpha() or not text_in[2].isalpha():
+                print("Invalid identifier")
+            else:
+                if text_in[0] in variables:
+                    running_total -= variables[text_in[0]]
+                else:
+                    try:
+                        a = int(text_in[0])
+                        running_total += a
+                    except ValueError:
+                        print("Unknown variable")
+
+                if text_in[2] in variables:
+                    running_total -= variables[text_in[2]]
+                    print(running_total)
+                else:
+                    try:
+                        a = int(text_in[2])
+                        running_total -= a
+                        print(running_total)
+                    except ValueError:
+                        print("Unknown variable")
+
+
 
     else:  # number operations
         try:
