@@ -120,7 +120,7 @@ while True:
 
     elif len(text_in) >= 3:
         print(text_in)
-        for el in text_in:
+        for el in text_in:  # separate into expressions and operations
             if el.lstrip("-+").isdigit():
                 post_stack.append(int(el))
                 print("post stack", post_stack)
@@ -139,17 +139,21 @@ while True:
 
             elif r == "-":
                 result = calc_stack.pop() - calc_stack.pop()
+                calc_stack.appendleft(result)
                 print("result", result)
 
             elif r == "+":
                 result = calc_stack.pop() + calc_stack.pop()
+                calc_stack.appendleft(result)
                 print("result", result)
 
             elif r == "*":
                 result = calc_stack.pop() * calc_stack.pop()
+                calc_stack.appendleft(result)
                 print("result", result)
 
             elif r == "/":
                 result = calc_stack.pop() / calc_stack.pop()
+                calc_stack.appendleft(result)
                 print("result", result)
 
