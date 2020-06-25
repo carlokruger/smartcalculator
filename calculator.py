@@ -1,10 +1,15 @@
 # write your code here
+import collections
 
 running_total = 0
 nums = 0
 variables = {}
 equal_count = 0
 text_in = []
+
+op_stack = collections.deque()
+post_stack = collections.deque()
+calc_stack = collections.deque()
 
 
 def return_variable(text):
@@ -34,8 +39,8 @@ def return_single_digit(text):
 
 def single_variable_assignment_malformed(text):
     if text[0][-1] == "=" or text[1][0] == "=":
-        for idx, item in enumerate(text):
-            text[idx] = item.replace("=", "")
+        for idx1, item in enumerate(text):
+            text[idx1] = item.replace("=", "")
     if text[1] in variables:
         variables.update({text[0]: variables[text[1]]})
     else:
@@ -92,134 +97,59 @@ while True:
         elif equal_count > 1:
             print("Invalid assignment")  # too many equal signs
 
-    elif len(text_in) == 3:
-        if text_in[1] == "=":  # well formed variable assignment
-            if not text_in[0].isalpha():
-                print("Invalid identifier")
-            else:
-                try:
-                    z = int(text_in[2])
-                    variables.update({text_in[0]: z})  # assign numerical value
+    elif len(text_in) == 3 and text_in[1] == "=":  # deal with assignment
 
-                except ValueError:
-                    if text_in[2] in variables:  # if variable already exists set assignment to value
-                        variables.update({text_in[0]: variables[text_in[2]]})
+        if not text_in[0].isalpha():  # well formed variable assignment
+            print("Invalid identifier")
+        else:
+            try:
+                z = int(text_in[2])
+                variables.update({text_in[0]: z})  # assign numerical value
+
+            except ValueError:
+                if text_in[2] in variables:  # if variable already exists set assignment to value
+                    variables.update({text_in[0]: variables[text_in[2]]})
+                else:
+                    if not text_in[2].isalpha():
+                        print("Invalid identifier")
                     else:
-                        if not text_in[2].isalpha():
-                            print("Invalid identifier")
-                        else:
-                            print("Unknown variable")
-
-        if text_in[1] == "+":  # dealing with simple addition
-            if not text_in[0].isalpha() or not text_in[2].isalpha():
-                print("Invalid identifier")
-            else:
-                if text_in[0] in variables:
-                    running_total += variables[text_in[0]]
-                else:
-                    try:
-                        a = int(text_in[0])
-                        running_total += a
-                    except ValueError:
                         print("Unknown variable")
 
-                if text_in[2] in variables:
-                    running_total += variables[text_in[2]]
-                    print(running_total)
-
-                else:
-                    try:
-                        a = int(text_in[2])
-                        running_total += a
-                        print(running_total)
-                    except ValueError:
-                        print("Unknown variable")
-
-        if text_in[1] == "-":  # dealing with simple subtraction
-            if not text_in[0].isalpha() or not text_in[2].isalpha():
-                print("Invalid identifier")
-            else:
-                if text_in[0] in variables:
-                    running_total += variables[text_in[0]]
-                else:
-                    try:
-                        a = int(text_in[0])
-                        running_total += a
-                    except ValueError:
-                        print("Unknown variable")
-
-                if text_in[2] in variables:
-                    running_total -= variables[text_in[2]]
-                    print(running_total)
-                else:
-                    try:
-                        a = int(text_in[2])
-                        running_total -= a
-                        print(running_total)
-                    except ValueError:
-                        print("Unknown variable")
-
-    elif len(text_in) > 3 and text_in.count("=") > 1:
+    elif len(text_in) > 3 and text_in.count("=") > 1:  # catch special case of multi equals
         print("Invalid assignment")
 
-    elif len(text_in) > 3 and text_in[1] != "=":
-        for var in range(0, len(text_in), 2):  # parse for variables
-            if not text_in[var].isalpha() and not text_in[var].lstrip("=+-").isdigit():
-                print("Invalid identifier")
-            elif text_in[var] not in variables and not text_in[var].lstrip("=+-").isdigit():
-                print("Unknown variable")
-            try:
-                b = int(text_in[var])
-                text_in[var] = b  # assign number to variable spot
-            except ValueError:
-                if text_in[var] in variables:
-                    text_in[var] = variables[text_in[var]]  # set spot = value of key variable
-                else:
-                    print("Invalid identifier")
+    elif len(text_in) >= 3:
+        print(text_in)
+        for el in text_in:
+            if el.lstrip("-+").isdigit():
+                post_stack.append(int(el))
+                print("post stack", post_stack)
 
-        for ops in range(1, len(text_in), 2):  # parsing operators
-            if "+" in text_in[ops]:
-                text_in[ops] = "+"
-            elif "-" in text_in[ops] and len(text_in[ops]) % 2 == 0:
-                text_in[ops] = "+"
-            elif "-" in text_in[ops] and len(text_in[ops]) % 2 == 1:
-                text_in[ops] = "-"
-            else:
-                print("Invalid operator")
+            elif el in "-+*/":
+                op_stack.appendleft(el)
+                print("opstack", op_stack)
 
-        running_total += text_in[0]
+        post_stack.append(op_stack.pop())
+        print("result", post_stack)
 
-        for idx in range(2, len(text_in), 2):
-            if text_in[idx - 1] == "+":
-                running_total += text_in[idx]
+        for r in post_stack:
+            if str(r).lstrip("-+").isdigit():
+                calc_stack.appendleft(r)
+                print("calc", calc_stack)
 
-            elif text_in[idx - 1] == "-":
-                running_total -= text_in[idx]
+            elif r == "-":
+                result = calc_stack.pop() - calc_stack.pop()
+                print("result", result)
 
-            elif text_in[idx - 1] == "=":
-                print("Invalid assignment")
+            elif r == "+":
+                result = calc_stack.pop() + calc_stack.pop()
+                print("result", result)
 
-        print(running_total)
+            elif r == "*":
+                result = calc_stack.pop() * calc_stack.pop()
+                print("result", result)
 
+            elif r == "/":
+                result = calc_stack.pop() / calc_stack.pop()
+                print("result", result)
 
-
-    '''else:  # number operations
-        try:
-            for x in range(0, len(text_in), 2):
-                nums += int(text_in[x])
-
-        except ValueError:
-            print("Invalid expression3")
-
-        else:
-            running_total += int(text_in[0])
-
-            for i in range(1, len(text_in), 2):
-                if "-" in text_in[i] and len(text_in[i]) % 2 != 0:  # dealing with multiple minus signs
-                    running_total -= int(text_in[i + 1])
-                else:
-                    running_total += int(text_in[i + 1])
-
-            print(running_total)'''
-
-    running_total = 0
