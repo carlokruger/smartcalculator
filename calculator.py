@@ -140,22 +140,41 @@ while True:
                     post_stack.append(op_stack.pop())
                     op_stack.append(el)
                     print("opstack2", op_stack)
-        post_stack.append(op_stack.pop())
 
+            elif el in "*/":
+                if len(op_stack) == 0:
+                    op_stack.append(el)
 
+                elif len(op_stack) > 0:
+                    if op_stack[0] in "+-":
+                        post_stack.append(op_stack.pop())
+                        op_stack.append(el)
+
+                    elif op_stack[0] in "*/":
+                        op_stack.append(el)
+
+        for _i in range(len(op_stack)):
+            post_stack.append(op_stack.pop())
+        print("postfix0", post_stack)
 
         for r in post_stack:
             if str(r).lstrip("-+").isdigit():
                 calc_stack.appendleft(r)
                 print("calc1", calc_stack)
 
-            elif r in "+-":
+            elif r in "+-/*":
                 if len(op_stack) == 0:
                     if r == "+":
                         calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
 
                     elif r == "-":
                         calc_stack.appendleft(calc_stack.pop() - calc_stack.pop())
+
+                    elif r == "*":
+                        calc_stack.appendleft(calc_stack.pop() * calc_stack.pop())
+
+                    elif r == "/":
+                        calc_stack.appendleft(calc_stack.pop() / calc_stack.pop())
 
                 elif len(op_stack) > 0:
                     calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
