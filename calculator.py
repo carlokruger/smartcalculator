@@ -147,40 +147,41 @@ while True:
 
                 elif len(op_stack) > 0:
                     if op_stack[0] in "+-":
-                        post_stack.append(op_stack.pop())
                         op_stack.append(el)
 
                     elif op_stack[0] in "*/":
+                        post_stack.append(op_stack.pop())
                         op_stack.append(el)
 
         for _i in range(len(op_stack)):
             post_stack.append(op_stack.pop())
         print("postfix0", post_stack)
+        print("opstack0", op_stack)
 
+# calculate using the postfix queue
         for r in post_stack:
             if str(r).lstrip("-+").isdigit():
-                calc_stack.appendleft(r)
+                calc_stack.append(r)
                 print("calc1", calc_stack)
 
             elif r in "+-/*":
-                if len(op_stack) == 0:
-                    if r == "+":
-                        calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
+                if r == "+":
+                    calc_stack.append(calc_stack.pop() + calc_stack.pop())
+                    print("calcstack+", calc_stack)
 
-                    elif r == "-":
-                        calc_stack.appendleft(calc_stack.pop() - calc_stack.pop())
+                elif r == "-":
+                    calc_stack.append(calc_stack.pop() - calc_stack.pop())
+                    print("calcstack-", calc_stack)
 
-                    elif r == "*":
-                        calc_stack.appendleft(calc_stack.pop() * calc_stack.pop())
+                elif r == "*":
+                    calc_stack.append(calc_stack.pop() * calc_stack.pop())
+                    print("calcstack*", calc_stack)
 
-                    elif r == "/":
-                        calc_stack.appendleft(calc_stack.pop() / calc_stack.pop())
+                elif r == "/":
+                    calc_stack.append(calc_stack.pop() / calc_stack.pop())
+                    print("calcstack/", calc_stack)
 
-                elif len(op_stack) > 0:
-                    calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
-                    op_stack.pop()
-                    op_stack.appendleft(r)
-                    print("op2", op_stack)
+
 
         # calc_stack.append(op_stack.pop())
         print("result", calc_stack[0])
