@@ -10,6 +10,7 @@ text_in = []
 op_stack = collections.deque()
 post_stack = collections.deque()
 calc_stack = collections.deque()
+mem_stack = collections.deque()
 
 
 def return_variable(text):
@@ -119,41 +120,49 @@ while True:
         print("Invalid assignment")
 
     elif len(text_in) >= 3:
-        print(text_in)
+
         for el in text_in:  # separate into expressions and operations
             if el.lstrip("-+").isdigit():
                 post_stack.append(int(el))
-                print("post stack", post_stack)
 
-            elif el in "-+*/":
-                op_stack.appendleft(el)
-                print("opstack", op_stack)
+            elif el.isalpha() and el in variables:
+                post_stack.append(variables[el])
 
+            elif el.isalpha() and el not in variables:
+                print("Unknown variable")
+
+            elif el in "-+":
+                if len(op_stack) == 0:
+                    op_stack.append(el)
+                    print("opstack1", op_stack)
+
+                elif len(op_stack) > 0:
+                    post_stack.append(op_stack.pop())
+                    op_stack.append(el)
+                    print("opstack2", op_stack)
         post_stack.append(op_stack.pop())
-        print("result", post_stack)
+
+
 
         for r in post_stack:
             if str(r).lstrip("-+").isdigit():
                 calc_stack.appendleft(r)
-                print("calc", calc_stack)
+                print("calc1", calc_stack)
 
-            elif r == "-":
-                result = calc_stack.pop() - calc_stack.pop()
-                calc_stack.appendleft(result)
-                print("result", result)
+            elif r in "+-":
+                if len(op_stack) == 0:
+                    if r == "+":
+                        calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
 
-            elif r == "+":
-                result = calc_stack.pop() + calc_stack.pop()
-                calc_stack.appendleft(result)
-                print("result", result)
+                    elif r == "-":
+                        calc_stack.appendleft(calc_stack.pop() - calc_stack.pop())
 
-            elif r == "*":
-                result = calc_stack.pop() * calc_stack.pop()
-                calc_stack.appendleft(result)
-                print("result", result)
+                elif len(op_stack) > 0:
+                    calc_stack.appendleft(calc_stack.pop() + calc_stack.pop())
+                    op_stack.pop()
+                    op_stack.appendleft(r)
+                    print("op2", op_stack)
 
-            elif r == "/":
-                result = calc_stack.pop() / calc_stack.pop()
-                calc_stack.appendleft(result)
-                print("result", result)
+        # calc_stack.append(op_stack.pop())
+        print("result", calc_stack[0])
 
