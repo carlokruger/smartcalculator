@@ -153,6 +153,16 @@ while True:
                         post_stack.append(op_stack.pop())
                         op_stack.append(el)
 
+            elif el == "(":
+                    op_stack.append(el)
+
+            elif el == ")":
+                for j in range(len(op_stack)):
+                    if op_stack[j] != "(":
+                        post_stack.append((op_stack.pop()))
+                    elif op_stack[j] == "(":
+                        op_stack.pop()
+
         for _i in range(len(op_stack)):
             post_stack.append(op_stack.pop())
         print("postfix0", post_stack)
