@@ -122,9 +122,7 @@ while True:
     elif len(text_in) >= 3:
 
         for el in text_in:  # separate into expressions and operations
-            print("text_in", text_in)
-            print("element", el)
-            print("opsbegin", op_stack)
+
             if el.lstrip("-+").isdigit():
                 post_stack.append(int(el))
 
@@ -137,16 +135,17 @@ while True:
             elif el in "-+":
                 if len(op_stack) == 0:
                     op_stack.append(el)
-                    print("opstack1", op_stack)
+
 
                 elif len(op_stack) > 0:
                     if op_stack[0] == "(":
                         op_stack.pop()
                         op_stack.append(el)
-                    elif op_stack != "(":
+
+                    elif op_stack[0] != "(":
                         post_stack.append(op_stack.pop())
                         op_stack.append(el)
-                        print("opstack2", op_stack)
+
 
             elif el in "*/":
                 if len(op_stack) == 0:
@@ -160,27 +159,30 @@ while True:
                         post_stack.append(op_stack.pop())
                         op_stack.append(el)
 
+                    elif op_stack[0] == "(":
+                        op_stack.append(el)
+
             elif el == "(":
                     op_stack.append(el)
-                    print("ops(", op_stack)
+
 
             elif el == ")":
-                for j in range(len(op_stack)):
-                    if op_stack[j] != "(":
-                        print("opstackbefore", op_stack)
-                        print("posstackbefore", post_stack)
-                        post_stack.append((op_stack.pop()))
-                        print("poststackappend", post_stack)
+                while True:
+                    temp = op_stack.pop()
+                    if temp is None or temp == '(':
+                        break
+                    elif temp in "+-/*":
+                        post_stack.append(temp)
 
-                    elif op_stack[j] == "(":
-                        print("opsbefore", op_stack)
-                        del op_stack[j]
-                        print("opsafter", op_stack)
-
-        for _i in range(len(op_stack)):
-            post_stack.append(op_stack.pop())
+        print("op1", op_stack)
+        while len(op_stack) > 0:
+            temp1 = op_stack.pop()
+            print("temp", temp1)
+            if temp1 is None:
+                break
+            elif temp1 in "/-+*":
+                post_stack.append(temp1)
         print("postfix0", post_stack)
-        print("opstack0", op_stack)
 
 # calculate using the postfix queue
         for r in post_stack:
@@ -206,7 +208,9 @@ while True:
                     print("calcstack/", calc_stack)
 
 
-
-        # calc_stack.append(op_stack.pop())
+        # return results and clean up
         print("result", calc_stack[0])
+        post_stack = collections.deque()
+        calc_stack = collections.deque()
+
 
