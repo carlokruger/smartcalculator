@@ -122,6 +122,9 @@ while True:
     elif len(text_in) >= 3:
 
         for el in text_in:  # separate into expressions and operations
+            print("text_in", text_in)
+            print("element", el)
+            print("opsbegin", op_stack)
             if el.lstrip("-+").isdigit():
                 post_stack.append(int(el))
 
@@ -137,9 +140,13 @@ while True:
                     print("opstack1", op_stack)
 
                 elif len(op_stack) > 0:
-                    post_stack.append(op_stack.pop())
-                    op_stack.append(el)
-                    print("opstack2", op_stack)
+                    if op_stack[0] == "(":
+                        op_stack.pop()
+                        op_stack.append(el)
+                    elif op_stack != "(":
+                        post_stack.append(op_stack.pop())
+                        op_stack.append(el)
+                        print("opstack2", op_stack)
 
             elif el in "*/":
                 if len(op_stack) == 0:
@@ -155,13 +162,20 @@ while True:
 
             elif el == "(":
                     op_stack.append(el)
+                    print("ops(", op_stack)
 
             elif el == ")":
                 for j in range(len(op_stack)):
                     if op_stack[j] != "(":
+                        print("opstackbefore", op_stack)
+                        print("posstackbefore", post_stack)
                         post_stack.append((op_stack.pop()))
+                        print("poststackappend", post_stack)
+
                     elif op_stack[j] == "(":
-                        op_stack.pop()
+                        print("opsbefore", op_stack)
+                        del op_stack[j]
+                        print("opsafter", op_stack)
 
         for _i in range(len(op_stack)):
             post_stack.append(op_stack.pop())
