@@ -132,47 +132,50 @@ while True:
             elif el.isalpha() and el not in variables:
                 print("Unknown variable")
 
-            elif el in "-+":
-                if len(op_stack) == 0:
-                    op_stack.append(el)
-
-
-                elif len(op_stack) > 0:
-                    if op_stack[0] == "(":
-                        op_stack.pop()
-                        op_stack.append(el)
-
-                    elif op_stack[0] != "(":
-                        post_stack.append(op_stack.pop())
-                        op_stack.append(el)
-
-
-            elif el in "*/":
-                if len(op_stack) == 0:
-                    op_stack.append(el)
-
-                elif len(op_stack) > 0:
-                    if op_stack[0] in "+-":
-                        op_stack.append(el)
-
-                    elif op_stack[0] in "*/":
-                        post_stack.append(op_stack.pop())
-                        op_stack.append(el)
-
-                    elif op_stack[0] == "(":
-                        op_stack.append(el)
-
             elif el == "(":
-                    op_stack.append(el)
+                op_stack.append(el)
 
+            elif el in "/*":
+                while True:
+                    if len(op_stack) == 0:
+                        op_stack.append(el)
+                        break
+
+                    elif op_stack[-1] in "*/":
+                        post_stack.append(op_stack.pop())
+
+                    elif op_stack[-1] in "+-":
+                        op_stack.append(el)
+                        break
+
+                    elif op_stack[-1] == "(":
+                        op_stack.append(el)
+                        break
+
+            elif el in "-+":
+                while True:
+                    if len(op_stack) == 0:
+                        op_stack.append((el))
+                        break
+
+                    elif op_stack[-1] in "*/":
+                        post_stack.append(op_stack.pop())
+
+                    elif op_stack[-1] in "+-":
+                        post_stack.append(op_stack.pop())
+
+                    elif op_stack[-1] == "(":
+                        op_stack.append(el)
+                        break
 
             elif el == ")":
                 while True:
-                    temp = op_stack.pop()
-                    if temp is None or temp == '(':
+                    if op_stack[-1] in "+-/*":
+                        post_stack.append(op_stack.pop())
+
+                    elif op_stack[-1] == "(":
+                        op_stack.pop()
                         break
-                    elif temp in "+-/*":
-                        post_stack.append(temp)
 
         print("op1", op_stack)
         while len(op_stack) > 0:
@@ -196,7 +199,7 @@ while True:
                     print("calcstack+", calc_stack)
 
                 elif r == "-":
-                    calc_stack.append(calc_stack.pop() - calc_stack.pop())
+                    calc_stack.append(-calc_stack.pop() + calc_stack.pop())
                     print("calcstack-", calc_stack)
 
                 elif r == "*":
@@ -204,7 +207,7 @@ while True:
                     print("calcstack*", calc_stack)
 
                 elif r == "/":
-                    calc_stack.append(calc_stack.pop() / calc_stack.pop())
+                    calc_stack.append(1 / (calc_stack.pop() / calc_stack.pop()))
                     print("calcstack/", calc_stack)
 
 
