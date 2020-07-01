@@ -10,7 +10,7 @@ text_in = []
 op_stack = collections.deque()
 post_stack = collections.deque()
 calc_stack = collections.deque()
-mem_stack = collections.deque()
+num_str = ""
 
 
 def return_variable(text):
@@ -49,7 +49,35 @@ def single_variable_assignment_malformed(text):
 
 
 while True:
-    text_in = input().split()
+    text = "".join(input().split())  # concatenate into a single string
+    len_text = len(text) - 1
+    print("txt", text)
+
+    for t in text:
+        if text.index(t) == len_text and t.isdigit:  # if final digit
+            num_str += t
+            text_in.append(num_str)
+            num_str = ""
+        elif t.isdigit():
+            num_str += t
+        elif t.isalpha():
+            text_in.append(num_str)
+            num_str = ""
+            text_in.append(t)
+        elif t in "+-/*=":
+            text_in.append((num_str))
+            num_str = ""
+            text_in.append(t)
+        elif t in "(":
+            text_in.append(t)
+        elif t in ")":
+            text_in.append(num_str)
+            num_str = ""
+            text_in.append(t)
+
+
+
+    print("txtin", text_in)
 
     if len(text_in) == 0:
         pass
