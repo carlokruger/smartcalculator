@@ -58,6 +58,7 @@ while True:
     len_text = len(text) - 1
     print("txt", text)
 
+    # parse string into list
     for t in text:
         if len(text) == 0:
             pass
@@ -66,7 +67,18 @@ while True:
         elif t == "-" and text.index(t) == 0:  # deal with unary minus
             num_str += t
         elif text.index(t) == len_text:
-            if t.isalpha():  # if final alpha
+            if t == ")":
+                if len(num_str) > 0:
+                    text_in.append(num_str)
+                    text_in.append(t)
+                    num_str = ""
+                elif len(strings) > 0:
+                    text_in.append(strings)
+                    text_in.append(t)
+                    strings = ""
+                else:
+                    text_in.append(t)
+            elif t.isalpha():  # if final alpha
                 strings += t
                 text_in.append(strings)
                 strings = ""
@@ -74,6 +86,7 @@ while True:
                 num_str += t
                 text_in.append(num_str)
                 num_str = ""
+
         elif t.isdigit():
             num_str += t
         elif t.isalpha():
@@ -83,6 +96,7 @@ while True:
                 text_in.append(num_str)
                 num_str = ""
                 text_in.append(t)
+
             elif len(strings) > 0:
                 text_in.append(strings)
                 strings = ""
