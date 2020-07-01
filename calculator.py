@@ -11,6 +11,7 @@ op_stack = collections.deque()
 post_stack = collections.deque()
 calc_stack = collections.deque()
 num_str = ""
+strings = ""
 
 
 def return_variable(text):
@@ -28,6 +29,7 @@ def return_variable(text):
 
 def return_single_digit(text):
     global running_total
+    global text_in
     try:
         running_total += int(text[0])
 
@@ -36,6 +38,8 @@ def return_single_digit(text):
 
     else:
         print(running_total)
+        running_total = 0
+        text_in = []
 
 
 def single_variable_assignment_malformed(text):
@@ -49,35 +53,46 @@ def single_variable_assignment_malformed(text):
 
 
 while True:
+    text_in = []
     text = "".join(input().split())  # concatenate into a single string
     len_text = len(text) - 1
     print("txt", text)
 
     for t in text:
-        if text.index(t) == len_text and t.isdigit:  # if final digit
+        if len(text) == 0:
+            pass
+        elif t == "/" and text.index(t) == 0:
+            strings += t
+        elif t == "-" and text.index(t) == 0:  # deal with unary minus
             num_str += t
-            text_in.append(num_str)
-            num_str = ""
+        elif text.index(t) == len_text:
+            if t.isalpha():  # if final alpha
+                strings += t
+                text_in.append(strings)
+                strings = ""
+            elif t.isdigit:  # if final digit
+                num_str += t
+                text_in.append(num_str)
+                num_str = ""
         elif t.isdigit():
             num_str += t
         elif t.isalpha():
-            text_in.append(num_str)
-            num_str = ""
-            text_in.append(t)
-        elif t in "+-/*=":
-            text_in.append((num_str))
-            num_str = ""
-            text_in.append(t)
+            strings += t
+        elif t in "+-/*=)":
+            if len(num_str) > 0:
+                text_in.append(num_str)
+                num_str = ""
+                text_in.append(t)
+            elif len(strings) > 0:
+                text_in.append(strings)
+                strings = ""
+                text_in.append(t)
+            elif len(num_str) == 0 or len(strings) == 0:
+                text_in.append(t)
         elif t in "(":
             text_in.append(t)
-        elif t in ")":
-            text_in.append(num_str)
-            num_str = ""
-            text_in.append(t)
 
-
-
-    print("txtin", text_in)
+    print("text_in", text_in)
 
     if len(text_in) == 0:
         pass
