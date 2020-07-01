@@ -108,8 +108,11 @@ while True:
 
     print("text_in", text_in)
 
+
     if len(text_in) == 0:
         pass
+    elif text_in.count("(") != text_in.count(")"):
+        print("Invalid expression")
 
     elif len(text_in) == 1 and text_in[0][0] == "/":  # deal with commands
         if text_in[0] == "/exit":
@@ -175,7 +178,7 @@ while True:
 
     elif len(text_in) > 3 and text_in.count("=") > 1:  # catch special case of multi equals
         print("Invalid assignment")
-
+    # parse into postfix and opstack
     elif len(text_in) >= 3:
 
         for el in text_in:  # separate into expressions and operations
@@ -227,9 +230,10 @@ while True:
 
             elif el == ")":
                 while True:
+                    if len(op_stack) == 0:
+                        break
                     if op_stack[-1] in "+-/*":
                         post_stack.append(op_stack.pop())
-
                     elif op_stack[-1] == "(":
                         op_stack.pop()
                         break
@@ -242,6 +246,8 @@ while True:
                 break
             elif temp1 in "/-+*":
                 post_stack.append(temp1)
+            elif temp1 in "()":
+                print("Invalid expression")
         print("postfix0", post_stack)
 
 # calculate using the postfix queue
