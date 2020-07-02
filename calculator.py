@@ -58,10 +58,10 @@ while True:
     text_in = []
     text = "".join(input().split())  # concatenate into a single string
     len_text = len(text) - 1
-    print("txt", text)
+    #print("txt", text)
 
     # parse string into list
-    for t in text:
+    for idx, t in enumerate(text):
         if len(text) == 0:
             pass
 
@@ -71,15 +71,15 @@ while True:
             pass
 
         # deal with command initialisation
-        elif t == "/" and text.index(t) == 0:
+        elif t == "/" and idx == 0:
             strings += t
 
         # deal with unary minus
-        elif t == "-" and text.index(t) == 0:
+        elif t == "-" and idx == 0:
             num_str += t
 
         # deal with last character
-        elif text.index(t) == text.index(text[-1]):
+        elif idx == len_text:
             if t == ")":
                 if len(num_str) > 0:
                     text_in.append(num_str)
@@ -119,9 +119,7 @@ while True:
 
             # if final digit
             elif t.isdigit:
-                print("T", t)
-                print("+", plus)
-                print("-", minus)
+
                 if len(plus) > 0:
                     text_in.append("+")
                     plus = []
@@ -169,18 +167,15 @@ while True:
             elif len(minus) % 2 == 0 and len(minus) != 0:
                 text_in.append("+")
                 minus = []
-                num_str += t
+                strings += t
             elif len(minus) % 2 != 0:
                 text_in.append("-")
                 minus = []
-                num_str += t
+                strings += t
             elif len(plus) == 0 or len(minus) == 0:
                 strings += t
 
         elif t in "+":
-            print("here")
-            print("+", plus)
-            print("-", minus)
             if len(num_str) > 0:
                 text_in.append(num_str)
                 num_str = ""
@@ -217,7 +212,20 @@ while True:
                 text_in.append(t)
 
         elif t in "(":
-            text_in.append(t)
+            if len(minus) % 2 == 0 and len(minus) > 0:
+                text_in.append("+")
+                minus = []
+                text_in.append(t)
+            elif len(minus) % 2 != 0:
+                text_in.append("-")
+                minus = []
+                text_in.append(t)
+            elif len(plus) > 0:
+                text_in.append("+")
+                plus = []
+                text_in.append(t)
+            elif len(plus) == 0 or len(minus) == 0:
+                text_in.append(t)
 
     #print("text_in", text_in)
 
@@ -382,7 +390,7 @@ while True:
             elif temp1 in "()":
                 print("Invalid expression")
 
-        print("postfix0", post_stack)
+        #print("postfix0", post_stack)
 
 # calculate using the postfix queue
         for r in post_stack:
