@@ -270,7 +270,7 @@ while True:
                     print("calcstack*", calc_stack)
 
                 elif r == "/":
-                    calc_stack.append(1 / (calc_stack.pop() / calc_stack.pop()))
+                    calc_stack.append(int(1 / (calc_stack.pop() / calc_stack.pop())))
                     print("calcstack/", calc_stack)
 
 
