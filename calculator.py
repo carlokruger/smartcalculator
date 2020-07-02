@@ -64,6 +64,12 @@ while True:
     for t in text:
         if len(text) == 0:
             pass
+
+        elif "**" in text or "//" in text:
+            print("Invalid expression")
+            text = ""
+            pass
+
         # deal with command initialisation
         elif t == "/" and text.index(t) == 0:
             strings += t
@@ -73,7 +79,7 @@ while True:
             num_str += t
 
         # deal with last character
-        elif text.index(t) == len_text:
+        elif text.index(t) == text.index(text[-1]):
             if t == ")":
                 if len(num_str) > 0:
                     text_in.append(num_str)
@@ -94,21 +100,18 @@ while True:
                     strings += t
                     text_in.append(strings)
                     strings = ""
-
                 elif len(minus) % 2 == 0 and len(minus) != 0:
                     text_in.append("+")
                     minus = []
                     strings += t
                     text_in.append(strings)
                     strings = ""
-
                 elif len(minus) % 2 != 0:
                     text_in.append("-")
                     minus = []
                     strings += t
                     text_in.append(strings)
                     strings = ""
-
                 elif len(plus) == 0 or len(minus) == 0:
                     strings += t
                     text_in.append(strings)
@@ -116,37 +119,37 @@ while True:
 
             # if final digit
             elif t.isdigit:
+                print("T", t)
+                print("+", plus)
+                print("-", minus)
                 if len(plus) > 0:
                     text_in.append("+")
                     plus = []
                     num_str += t
                     text_in.append(num_str)
                     num_str = ""
-
                 elif len(minus) % 2 == 0 and len(minus) != 0:
                     text_in.append("+")
                     minus = []
                     num_str += t
                     text_in.append(num_str)
                     num_str = ""
-
                 elif len(minus) % 2 != 0:
                     text_in.append("-")
                     minus = []
                     num_str += t
                     text_in.append(num_str)
                     num_str = ""
-
                 elif len(plus) == 0 or len(minus) == 0:
                     num_str += t
                     text_in.append(num_str)
                     num_str = ""
 
-
         elif t.isdigit():
             if len(plus) > 0:
                 text_in.append("+")
                 num_str += t
+                plus = []
             elif len(minus) % 2 == 0 and len(minus) != 0:
                 text_in.append("+")
                 minus = []
@@ -161,6 +164,7 @@ while True:
         elif t.isalpha():
             if len(plus) > 0:
                 text_in.append("+")
+                plus = []
                 strings += t
             elif len(minus) % 2 == 0 and len(minus) != 0:
                 text_in.append("+")
@@ -174,6 +178,9 @@ while True:
                 strings += t
 
         elif t in "+":
+            print("here")
+            print("+", plus)
+            print("-", minus)
             if len(num_str) > 0:
                 text_in.append(num_str)
                 num_str = ""
@@ -202,17 +209,17 @@ while True:
                 text_in.append(num_str)
                 num_str = ""
                 text_in.append(t)
-
             elif len(strings) > 0:
                 text_in.append(strings)
                 strings = ""
                 text_in.append(t)
             elif len(num_str) == 0 or len(strings) == 0:
                 text_in.append(t)
+
         elif t in "(":
             text_in.append(t)
 
-    print("text_in", text_in)
+    #print("text_in", text_in)
 
 
     if len(text_in) == 0:
@@ -284,11 +291,11 @@ while True:
 
     elif len(text_in) > 3 and text_in.count("=") > 1:  # catch special case of multi equals
         print("Invalid assignment")
+
     # parse into postfix and opstack
     elif len(text_in) >= 3:
 
         for el in text_in:  # separate into expressions and operations
-            print("el", el)
 
             if el.lstrip("-+").isdigit():
 
@@ -307,7 +314,6 @@ while True:
                 while True:
                     if len(op_stack) == 0:
                         op_stack.append(el)
-                        print("opah", op_stack)
                         break
 
                     elif op_stack[-1] == "^":
@@ -366,48 +372,50 @@ while True:
                         op_stack.pop()
                         break
 
-        print("op1", op_stack)
-        print("p1", post_stack)
+
         while len(op_stack) > 0:
             temp1 = op_stack.pop()
-            print("temp", temp1)
             if temp1 is None:
                 break
             elif temp1 in "/-+*^":
                 post_stack.append(temp1)
             elif temp1 in "()":
                 print("Invalid expression")
+
         print("postfix0", post_stack)
 
 # calculate using the postfix queue
         for r in post_stack:
             if str(r).lstrip("-+").isdigit():
                 calc_stack.append(r)
-                print("calc1", calc_stack)
+                #print("calc1", calc_stack)
 
             elif r in "+-/*^":
                 if r == "+":
                     calc_stack.append(calc_stack.pop() + calc_stack.pop())
-                    print("calcstack+", calc_stack)
+                    #print("calcstack+", calc_stack)
 
                 elif r == "-":
                     calc_stack.append(-calc_stack.pop() + calc_stack.pop())
-                    print("calcstack-", calc_stack)
+                    #print("calcstack-", calc_stack)
 
                 elif r == "*":
                     calc_stack.append(calc_stack.pop() * calc_stack.pop())
-                    print("calcstack*", calc_stack)
+                    #print("calcstack*", calc_stack)
 
                 elif r == "/":
                     calc_stack.append(int(1 / (calc_stack.pop() / calc_stack.pop())))
-                    print("calcstack/", calc_stack)
+                    #print("calcstack/", calc_stack)
 
                 elif r == "^":
-                    calc_stack.append(int((calc_stack.pop() ** calc_stack.pop())))
+                    termb = calc_stack.pop()
+                    terma = calc_stack.pop()
+                    calc_stack.append(int((terma ** termb)))
+                    #print("calcstack^", calc_stack)
 
 
         # return results and clean up
-        print("result", calc_stack[0])
+        print(calc_stack[0])
         post_stack = collections.deque()
         calc_stack = collections.deque()
 
