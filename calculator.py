@@ -12,6 +12,8 @@ post_stack = collections.deque()
 calc_stack = collections.deque()
 num_str = ""
 strings = ""
+plus = []
+minus = []
 
 
 def return_variable(text):
@@ -62,10 +64,15 @@ while True:
     for t in text:
         if len(text) == 0:
             pass
+        # deal with command initialisation
         elif t == "/" and text.index(t) == 0:
             strings += t
-        elif t == "-" and text.index(t) == 0:  # deal with unary minus
+
+        # deal with unary minus
+        elif t == "-" and text.index(t) == 0:
             num_str += t
+
+        # deal with last character
         elif text.index(t) == len_text:
             if t == ")":
                 if len(num_str) > 0:
@@ -78,20 +85,80 @@ while True:
                     strings = ""
                 else:
                     text_in.append(t)
-            elif t.isalpha():  # if final alpha
+
+            # if final alpha
+            elif t.isalpha():
                 strings += t
                 text_in.append(strings)
                 strings = ""
-            elif t.isdigit:  # if final digit
-                num_str += t
-                text_in.append(num_str)
-                num_str = ""
+
+            # if final digit
+            elif t.isdigit:
+                if len(plus) > 0:
+                    text_in.append("+")
+                    num_str += t
+                    text_in.append(num_str)
+                    num_str = ""
+
+                elif len(minus) % 2 == 0 and len(minus) != 0:
+                    text_in.append("+")
+                    minus = []
+                    num_str += t
+                    text_in.append(num_str)
+                    num_str = ""
+
+                elif len(minus) % 2 != 0:
+                    text_in.append("-")
+                    minus = []
+                    num_str += t
+                    text_in.append(num_str)
+                    num_str = ""
+
+                elif len(plus) == 0 or len(minus) == 0:
+                    num_str += t
+                    text_in.append(num_str)
+                    num_str = ""
+
 
         elif t.isdigit():
-            num_str += t
+            if len(plus) > 0:
+                text_in.append("+")
+                num_str += t
+            elif len(plus) == 0:
+                num_str += t
+
         elif t.isalpha():
-            strings += t
-        elif t in "+-/*=)^":
+            if len(plus) > 0:
+                text_in.append("+")
+                strings += t
+            elif len(plus) == 0:
+                strings += t
+
+        elif t in "+":
+            if len(num_str) > 0:
+                text_in.append(num_str)
+                num_str = ""
+                plus.append(t)
+            elif len(strings) > 0:
+                text_in.append(strings)
+                strings = ""
+                plus.append(t)
+            elif len(num_str) == 0 or len(strings) == 0:
+                plus.append(t)
+
+        elif t in "-":
+            if len(num_str) > 0:
+                text_in.append(num_str)
+                num_str = ""
+                minus.append(t)
+            elif len(strings) > 0:
+                text_in.append(strings)
+                strings = ""
+                minus.append(t)
+            elif len(num_str) == 0 or len(strings) == 0:
+                minus.append(t)
+
+        elif t in "/*=)^":
             if len(num_str) > 0:
                 text_in.append(num_str)
                 num_str = ""
