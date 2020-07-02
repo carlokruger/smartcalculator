@@ -124,14 +124,30 @@ while True:
             if len(plus) > 0:
                 text_in.append("+")
                 num_str += t
-            elif len(plus) == 0:
+            elif len(minus) % 2 == 0 and len(minus) != 0:
+                text_in.append("+")
+                minus = []
+                num_str += t
+            elif len(minus) % 2 != 0:
+                text_in.append("-")
+                minus = []
+                num_str += t
+            elif len(plus) == 0 or len(minus) == 0:
                 num_str += t
 
         elif t.isalpha():
             if len(plus) > 0:
                 text_in.append("+")
                 strings += t
-            elif len(plus) == 0:
+            elif len(minus) % 2 == 0 and len(minus) != 0:
+                text_in.append("+")
+                minus = []
+                num_str += t
+            elif len(minus) % 2 != 0:
+                text_in.append("-")
+                minus = []
+                num_str += t
+            elif len(plus) == 0 or len(minus) == 0:
                 strings += t
 
         elif t in "+":
