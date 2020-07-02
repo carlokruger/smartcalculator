@@ -88,14 +88,37 @@ while True:
 
             # if final alpha
             elif t.isalpha():
-                strings += t
-                text_in.append(strings)
-                strings = ""
+                if len(plus) > 0:
+                    text_in.append("+")
+                    plus = []
+                    strings += t
+                    text_in.append(strings)
+                    strings = ""
+
+                elif len(minus) % 2 == 0 and len(minus) != 0:
+                    text_in.append("+")
+                    minus = []
+                    strings += t
+                    text_in.append(strings)
+                    strings = ""
+
+                elif len(minus) % 2 != 0:
+                    text_in.append("-")
+                    minus = []
+                    strings += t
+                    text_in.append(strings)
+                    strings = ""
+
+                elif len(plus) == 0 or len(minus) == 0:
+                    strings += t
+                    text_in.append(strings)
+                    strings = ""
 
             # if final digit
             elif t.isdigit:
                 if len(plus) > 0:
                     text_in.append("+")
+                    plus = []
                     num_str += t
                     text_in.append(num_str)
                     num_str = ""
