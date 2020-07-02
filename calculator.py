@@ -91,7 +91,7 @@ while True:
             num_str += t
         elif t.isalpha():
             strings += t
-        elif t in "+-/*=)":
+        elif t in "+-/*=)^":
             if len(num_str) > 0:
                 text_in.append(num_str)
                 num_str = ""
@@ -182,8 +182,10 @@ while True:
     elif len(text_in) >= 3:
 
         for el in text_in:  # separate into expressions and operations
+            print("el", el)
 
             if el.lstrip("-+").isdigit():
+
                 post_stack.append(int(el))
 
             elif el.isalpha() and el in variables:
@@ -195,11 +197,31 @@ while True:
             elif el == "(":
                 op_stack.append(el)
 
+            elif el == "^":
+                while True:
+                    if len(op_stack) == 0:
+                        op_stack.append(el)
+                        print("opah", op_stack)
+                        break
+
+                    elif op_stack[-1] == "^":
+                        post_stack.append(op_stack.pop())
+
+                    elif op_stack[-1] in "/+-*":
+                        op_stack.append(el)
+                        break
+
+                    elif op_stack[-1] == "(":
+                        op_stack.append(el)
+                        break
+
             elif el in "/*":
                 while True:
                     if len(op_stack) == 0:
                         op_stack.append(el)
                         break
+                    elif op_stack[-1] == "^":
+                        post_stack.append(op_stack.pop())
 
                     elif op_stack[-1] in "*/":
                         post_stack.append(op_stack.pop())
@@ -218,7 +240,7 @@ while True:
                         op_stack.append((el))
                         break
 
-                    elif op_stack[-1] in "*/":
+                    elif op_stack[-1] in "*/^":
                         post_stack.append(op_stack.pop())
 
                     elif op_stack[-1] in "+-":
@@ -232,19 +254,20 @@ while True:
                 while True:
                     if len(op_stack) == 0:
                         break
-                    if op_stack[-1] in "+-/*":
+                    if op_stack[-1] in "+-/*^":
                         post_stack.append(op_stack.pop())
                     elif op_stack[-1] == "(":
                         op_stack.pop()
                         break
 
         print("op1", op_stack)
+        print("p1", post_stack)
         while len(op_stack) > 0:
             temp1 = op_stack.pop()
             print("temp", temp1)
             if temp1 is None:
                 break
-            elif temp1 in "/-+*":
+            elif temp1 in "/-+*^":
                 post_stack.append(temp1)
             elif temp1 in "()":
                 print("Invalid expression")
@@ -256,7 +279,7 @@ while True:
                 calc_stack.append(r)
                 print("calc1", calc_stack)
 
-            elif r in "+-/*":
+            elif r in "+-/*^":
                 if r == "+":
                     calc_stack.append(calc_stack.pop() + calc_stack.pop())
                     print("calcstack+", calc_stack)
@@ -272,6 +295,9 @@ while True:
                 elif r == "/":
                     calc_stack.append(int(1 / (calc_stack.pop() / calc_stack.pop())))
                     print("calcstack/", calc_stack)
+
+                elif r == "^":
+                    calc_stack.append(int((calc_stack.pop() ** calc_stack.pop())))
 
 
         # return results and clean up
